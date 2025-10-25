@@ -22,13 +22,16 @@ class ChromeTest {
     }
 
     @BeforeEach
-    void setup() {
-        driver = new ChromeDriver();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
+    public void setup() {
+        WebDriverManager.chromedriver().setup();
+
+        driver = WebDriverManager.chromedriver()
+                .capabilities(new ChromeOptions()
+                        .addArguments("--no-sandbox")
+                        .addArguments("--disable-dev-shm-usage")
+                        .addArguments("--headless")
+                        .addArguments("--user-data-dir=/tmp/chrome-profile"))
+                .create();
     }
 
     @AfterEach
