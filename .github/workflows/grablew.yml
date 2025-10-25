@@ -18,18 +18,52 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Start SUT
+      - name: Install diagnostic tools
+        run: sudo apt-get update && sudo apt-get install -y curl net-tools
+
+      - name: Check port 9999 before start
         run: |
-          # Запускаем приложение и ждем его готовности
-          java -jar ./artifacts/app-order.jar &
+          echo "Checking port 9999 before starting app..."
+          netstat -tulpn | grep 9999 || echo "Port 9999 is free"
+
+      - name: Start SUT with diagnostics
+        run: |
+          echo "Starting application..."
+          # Запускаем приложение с выводом логов
+          java -jar ./artifacts/app-order.jar > app.log 2>&1 &
           APP_PID=$!
-          echo "Started app with PID: $APP_PID"
+          echo "Application PID: $APP_PID"
+          echo $APP_PID > app.pid
           
-          # Ждем пока приложение станет доступно
-          timeout 30s bash -c 'until curl -f http://localhost:9999 > /dev/null 2>&1; do sleep 1; done'
-          echo "Application is ready!"
+          # Ждем и проверяем запуск
+          echo "Waiting for app to start..."
+          for i in {1..30}; do
+            if curl -s -f http://localhost:9999 > /dev/null 2>&1; then
+              echo "✅ Application is running on port 9999"
+              curl -s http://localhost:9999 | head -20
+              break
+            else
+              echo "⏳ Waiting for app... attempt $i/30"
+              sleep 2
+            fi
+          done
+          
+          # Проверяем процесс
+          if ps -p $APP_PID > /dev/null; then
+            echo "✅ Application process is running"
+          else
+            echo "❌ Application process died"
+            cat app.log || echo "No log file"
+          fi
+
+      - name: Check application status
+        run: |
+          echo "Final application status check:"
+          curl -v http://localhost:9999 || echo "Curl failed"
+          netstat -tulpn | grep 9999 || echo "Port not found"
+          ps aux | grep java || echo "No Java processes"
 
       - name: Build with Gradle
         run: |
-          # Запускаем тесты с headless режимом
-          ./gradlew test --info -Dselenide.headless=true
+          # Запускаем тесты с headless режимом и дополнительными опциями
+          ./gradlew test --info -Dselenide.headless=true -Dselenide.browser=chrome
