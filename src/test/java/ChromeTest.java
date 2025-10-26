@@ -31,7 +31,7 @@ class ChromeTest {
                 .capabilities(new ChromeOptions()
                         .addArguments("--no-sandbox")
                         .addArguments("--disable-dev-shm-usage")
-                        .addArguments("--headless")
+                        //.addArguments("--headless")
                         .addArguments("--user-data-dir=/tmp/chrome-profile"))
                 .create();
     }
@@ -43,6 +43,7 @@ class ChromeTest {
 
     @Test
     void shouldSubmitRequest() {
+        driver.get("http://localhost:9999");
         List<WebElement> inputs = driver.findElements(By.cssSelector("input"));
         inputs.get(0).sendKeys("Василий");
         inputs.get(1).sendKeys("+79022090443");
