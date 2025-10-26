@@ -31,7 +31,7 @@ class ChromeTest {
                 .capabilities(new ChromeOptions()
                         .addArguments("--no-sandbox")
                         .addArguments("--disable-dev-shm-usage")
-                        //.addArguments("--headless")
+                        .addArguments("--headless")
                         .addArguments("--user-data-dir=/tmp/chrome-profile"))
                 .create();
     }
