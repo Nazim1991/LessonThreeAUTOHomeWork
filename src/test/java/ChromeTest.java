@@ -29,9 +29,10 @@ class ChromeTest {
                 .capabilities(new ChromeOptions()
                         .addArguments("--no-sandbox")
                         .addArguments("--disable-dev-shm-usage")
-                        .addArguments("--headless")
+                        //.addArguments("--headless")
                         .addArguments("--user-data-dir=/tmp/chrome-profile"))
                 .create();
+        driver.get("http://localhost:9999");
     }
 
     @AfterEach
@@ -41,7 +42,6 @@ class ChromeTest {
 
     @Test
     void shouldSubmitRequest() {
-        driver.get("http://localhost:9999");
         List<WebElement> elements = driver.findElements(By.className("input__control"));
         elements.get(0).sendKeys("Василий");
         elements.get(1).sendKeys("+79270000000");
@@ -49,6 +49,16 @@ class ChromeTest {
         driver.findElement(By.className("button")).click();
         String text = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText();
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", text.trim());
+    }
+    @Test
+    void errorNameRequest() {
+        List<WebElement> elements = driver.findElements(By.className("input__control"));
+        elements.get(0).sendKeys("Vasiliy");
+        elements.get(1).sendKeys("+79270000000");
+        driver.findElement(By.cssSelector("label[data-test-id='agreement']")).click();
+        driver.findElement(By.className("button")).click();
+        String text = driver.findElement(By.cssSelector("[class = input__sub]")).getText();
+        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", text.trim());
     }
 
 
