@@ -1,1 +1,1 @@
-[![Java CI with Gradle](https://github.com/Nazim1991/LessonThreeAUTOHomeWork/actions/workflows/grablew.yml/badge.svg)](https://github.com/Nazim1991/LessonThreeAUTOHomeWork/actions/workflows/grablew.yml)
+[![Java CI with Gradle](https://github.com/Nazim1991/LessonThreeAUTOHomeWork/actions/workflows/gradle.yml/badge.svg)](https://github.com/Nazim1991/LessonThreeAUTOHomeWork/actions/workflows/gradle.yml)

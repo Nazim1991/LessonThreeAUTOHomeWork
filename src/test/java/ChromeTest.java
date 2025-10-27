@@ -25,8 +25,6 @@ class ChromeTest {
 
     @BeforeEach
     public void setup() {
-        WebDriverManager.chromedriver().setup();
-
         driver = WebDriverManager.chromedriver()
                 .capabilities(new ChromeOptions()
                         .addArguments("--no-sandbox")
@@ -44,14 +42,13 @@ class ChromeTest {
     @Test
     void shouldSubmitRequest() {
         driver.get("http://localhost:9999");
-        List<WebElement> inputs = driver.findElements(By.cssSelector("input"));
-        inputs.get(0).sendKeys("Василий");
-        inputs.get(1).sendKeys("+79022090443");
-        driver.findElement(By.cssSelector("label")).click();
-        driver.findElement(By.cssSelector("button")).click();
-        WebElement result = driver.findElement(By.className("alert-success"));
-        assertTrue(result.isDisplayed());
-        assertEquals("Ваша заявка успешно отправлена!", result.getText().trim());
+        List<WebElement> elements = driver.findElements(By.className("input__control"));
+        elements.get(0).sendKeys("Василий");
+        elements.get(1).sendKeys("+79270000000");
+        driver.findElement(By.cssSelector("label[data-test-id='agreement']")).click();
+        driver.findElement(By.className("button")).click();
+        String text = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText();
+        assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", text.trim());
     }
 
 
