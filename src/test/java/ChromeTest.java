@@ -29,7 +29,7 @@ class ChromeTest {
                 .capabilities(new ChromeOptions()
                         .addArguments("--no-sandbox")
                         .addArguments("--disable-dev-shm-usage")
-                        //.addArguments("--headless")
+                        .addArguments("--headless")
                         .addArguments("--user-data-dir=/tmp/chrome-profile"))
                 .create();
         driver.get("http://localhost:9999");
@@ -40,7 +40,7 @@ class ChromeTest {
         driver.quit();
     }
 
-    /*@Test
+    @Test
     void shouldSubmitRequest() {
         driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Василий");
         driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+79022090444");
@@ -60,38 +60,38 @@ class ChromeTest {
     }
     @Test
     void errorPhoneRequest() {
-        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Vasiliy");
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Василий");
         driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+!_(AВ><*");
         driver.findElement(By.cssSelector("label[data-test-id='agreement']")).click();
         driver.findElement(By.className("button")).click();
-        String text = driver.findElement(By.cssSelector("[class = input__sub]")).getText();
-        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", text.trim());
+        String text = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", text.trim());
     }
     @Test
-    void errorEmpotyNameRequest() {
-        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys(" ");
+    void errorEmptyNameRequest() {
         driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+79022090444");
         driver.findElement(By.cssSelector("label[data-test-id='agreement']")).click();
         driver.findElement(By.className("button")).click();
-        String text = driver.findElement(By.cssSelector("[class = input__sub]")).getText();
-        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", text.trim());
+        boolean nameIsEmptyErrorDislayed = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid")).isDisplayed();
+        assertTrue(nameIsEmptyErrorDislayed);
     }
     @Test
-    void errorEmpotyPhoneRequest() {
-        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Vasiliy");
-        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys(" ");
+    void errorEmptyPhoneRequest() {
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Василий");
         driver.findElement(By.cssSelector("label[data-test-id='agreement']")).click();
         driver.findElement(By.className("button")).click();
-        String text = driver.findElement(By.cssSelector("[class = input__sub]")).getText();
-        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", text.trim());
-    }*/
+        boolean phoneIsEmptyErrorDislayed = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid")).isDisplayed();
+        assertTrue(phoneIsEmptyErrorDislayed);
+    }
+
     @Test
     void errorNoClickRequest() {
         driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Василий");
         driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+79022090444");
         driver.findElement(By.className("button")).click();
-        boolean isErrorDisplayed = driver.findElements(By.cssSelector("[data-test-id='agreement'] .input_invalid")).size() > 0;
+
+        boolean isErrorDisplayed = driver.findElement(By.cssSelector(".input_invalid")).isDisplayed();
+
         assertTrue(isErrorDisplayed);
     }
-
 }
